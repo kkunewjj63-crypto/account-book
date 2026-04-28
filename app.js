@@ -1,20 +1,27 @@
 let data = JSON.parse(localStorage.getItem("data") || "[]");
+
+let settings = JSON.parse(localStorage.getItem("settings") || JSON.stringify({
+  categories:["식비","교통","쇼핑"],
+  methods:["현금","카드"]
+}));
+
+let step = 0;
+let temp = {};
 let chart;
 
-/* ===== SAVE SAFE ===== */
+/* SAVE */
 function save(){
-  try{
-    localStorage.setItem("data", JSON.stringify(data));
-  }catch(e){
-    alert("저장 오류");
-  }
+  localStorage.setItem("data",JSON.stringify(data));
 }
 
-/* ===== HOME ===== */
+function saveSettings(){
+  localStorage.setItem("settings",JSON.stringify(settings));
+}
+
+/* HOME */
 function renderHome(){
 
   let inS=0,outS=0;
-
   let list="";
 
   data.slice().reverse().forEach(d=>{
@@ -30,7 +37,7 @@ function renderHome(){
         <span style="color:${d.type==='수입'?'#007aff':'#ff3b30'}">
           ${d.type} ${a.toLocaleString()}
         </span><br>
-        <small>${d.category||"기타"} / ${d.method||""}</small><br>
+        <small>${d.category||""} / ${d.method||""}</small><br>
         <small>${d.memo||""}</small>
       </div>
     `;
@@ -45,7 +52,7 @@ function renderHome(){
   `;
 }
 
-/* ===== CALENDAR ENGINE ===== */
+/* CALENDAR */
 function createCalendar(){
 
   let now=new Date();
@@ -84,7 +91,7 @@ function createCalendar(){
   return html;
 }
 
-/* ===== STATS (PRO LEVEL) ===== */
+/* STATS */
 function renderStats(){
 
   let map={};
@@ -121,32 +128,75 @@ function renderStats(){
             "#007aff","#ff3b30","#34c759","#ff9500","#5856d6","#af52de"
           ]
         }]
-      },
-      options:{
-        plugins:{
-          legend:{position:"bottom"}
-        }
       }
     });
 
   },100);
 }
 
-/* ===== SETTINGS (BACKUP) ===== */
+/* SETTINGS */
 function renderSet(){
 
   view.innerHTML=`
     <div class="card">
-      <b>설정</b><br><br>
 
-      <button onclick="exportData()">데이터 백업</button><br><br>
+      <b>카테고리</b>
+      ${settings.categories.map((c,i)=>`
+        <div>${c} <button onclick="delCat(${i})">삭제</button></div>
+      `).join("")}
 
+      <input id="newCat" placeholder="추가">
+      <button onclick="addCat()">추가</button>
+
+      <hr>
+
+      <b>지출 방식</b>
+      ${settings.methods.map((m,i)=>`
+        <div>${m} <button onclick="delMethod(${i})">삭제</button></div>
+      `).join("")}
+
+      <input id="newMethod" placeholder="추가">
+      <button onclick="addMethod()">추가</button>
+
+      <hr>
+
+      <button onclick="exportData()">백업</button><br><br>
       <input type="file" onchange="importData(event)">
+
     </div>
   `;
 }
 
-/* ===== TAB ===== */
+/* SETTINGS ACTION */
+function addCat(){
+  if(newCat.value){
+    settings.categories.push(newCat.value);
+    saveSettings();
+    renderSet();
+  }
+}
+
+function delCat(i){
+  settings.categories.splice(i,1);
+  saveSettings();
+  renderSet();
+}
+
+function addMethod(){
+  if(newMethod.value){
+    settings.methods.push(newMethod.value);
+    saveSettings();
+    renderSet();
+  }
+}
+
+function delMethod(i){
+  settings.methods.splice(i,1);
+  saveSettings();
+  renderSet();
+}
+
+/* TAB */
 function tab(name){
 
   document.querySelectorAll(".tabs button")
@@ -159,51 +209,96 @@ function tab(name){
   if(name==="set") renderSet();
 }
 
-/* ===== ADD ===== */
-function add(){
+/* INPUT FLOW (APP STYLE) */
+function openPopup(){
+  step=1;
+  temp={};
+  renderPopup();
+  popup.style.display="block";
+}
 
-  if(!amount.value){
-    alert("금액 입력");
-    return;
+function renderPopup(){
+
+  if(step===1){
+    popup.innerHTML=`
+      <input type="number" id="tAmount" placeholder="금액">
+      <button onclick="step1()">다음</button>
+    `;
   }
 
-  data.push({
-    date:date.value||new Date().toISOString().split("T")[0],
-    amount:Number(amount.value),
-    type:type.value,
-    category:category.value||"기타",
-    method:method.value||"",
-    memo:memo.value||""
-  });
+  if(step===2){
+    popup.innerHTML=`
+      <button onclick="setType('수입')">수입</button>
+      <button onclick="setType('지출')">지출</button>
+    `;
+  }
+
+  if(step===3){
+    popup.innerHTML=`
+      <select id="tCat">
+        ${settings.categories.map(c=>`<option>${c}</option>`).join("")}
+      </select>
+      <button onclick="step3()">다음</button>
+    `;
+  }
+
+  if(step===4){
+    popup.innerHTML=`
+      <select id="tMethod">
+        ${settings.methods.map(m=>`<option>${m}</option>`).join("")}
+      </select>
+      <button onclick="saveData()">저장</button>
+    `;
+  }
+}
+
+function step1(){
+  let v=tAmount.value;
+  if(!v) return alert("금액 입력");
+  temp.amount=Number(v);
+  step=2;
+  renderPopup();
+}
+
+function setType(t){
+  temp.type=t;
+  step=3;
+  renderPopup();
+}
+
+function step3(){
+  temp.category=tCat.value;
+  step=4;
+  renderPopup();
+}
+
+function saveData(){
+
+  temp.method=tMethod.value;
+  temp.date=new Date().toISOString().split("T")[0];
+
+  data.push(temp);
 
   save();
-  closePopup();
+  popup.style.display="none";
   renderHome();
 }
 
-/* ===== POPUP ===== */
-function openPopup(){popup.style.display="block";}
-function closePopup(){popup.style.display="none";}
-
-/* ===== BACKUP ===== */
+/* BACKUP */
 function exportData(){
   let blob=new Blob([JSON.stringify(data)],{type:"application/json"});
   let a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
-  a.download="account_backup.json";
+  a.download="backup.json";
   a.click();
 }
 
 function importData(e){
   let r=new FileReader();
   r.onload=()=>{
-    try{
-      data=JSON.parse(r.result)||[];
-      save();
-      renderHome();
-    }catch{
-      alert("복원 실패");
-    }
+    data=JSON.parse(r.result)||[];
+    save();
+    renderHome();
   };
   r.readAsText(e.target.files[0]);
 }
