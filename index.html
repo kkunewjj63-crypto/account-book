@@ -6,11 +6,14 @@
 <title>account book</title>
 
 <link rel="manifest" href="manifest.json">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 body{margin:0;font-family:-apple-system;background:#f2f2f7;}
 
-.header{text-align:center;padding:14px;background:#fff;font-weight:600;}
+.header{
+text-align:center;padding:14px;background:#fff;font-weight:600;
+}
 
 .summary{
 display:flex;justify-content:space-between;
@@ -49,6 +52,9 @@ min-height:50px;
 font-size:11px;
 padding:4px;
 }
+
+.in{color:#007aff;}
+.out{color:#ff3b30;}
 
 .fab{
 position:fixed;
