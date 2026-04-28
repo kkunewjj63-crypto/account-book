@@ -9,25 +9,77 @@
 
 <style>
 body{margin:0;font-family:-apple-system;background:#f2f2f7;}
+
 .header{text-align:center;padding:14px;background:#fff;font-weight:600;}
 
-.summary{display:flex;justify-content:space-between;margin:10px;padding:14px;background:#fff;border-radius:14px;}
+.summary{
+display:flex;justify-content:space-between;
+margin:10px;padding:14px;background:#fff;border-radius:14px;
+}
 
-.tabs{display:flex;margin:10px;background:#fff;border-radius:14px;overflow:hidden;}
-.tabs button{flex:1;padding:12px;border:none;background:transparent;}
-.tabs button.active{background:#000;color:#fff;}
+.tabs{
+display:flex;margin:10px;background:#fff;border-radius:14px;overflow:hidden;
+}
 
-.card{margin:10px;background:#fff;border-radius:14px;padding:12px;}
+.tabs button{
+flex:1;padding:12px;border:none;background:transparent;
+}
 
-.item{padding:10px;border-bottom:1px solid #eee;}
+.tabs button.active{
+background:#000;color:#fff;
+}
 
-.fab{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-background:#000;color:#fff;padding:14px 22px;border:none;border-radius:999px;}
+.card{
+margin:10px;background:#fff;border-radius:14px;padding:12px;
+}
 
-.popup{position:fixed;bottom:0;left:0;width:100%;background:#fff;
-padding:16px;border-radius:18px 18px 0 0;display:none;}
+.item{
+padding:10px;border-bottom:1px solid #eee;
+}
 
-input,select{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1px solid #ddd;}
+.calendar{
+display:grid;
+grid-template-columns:repeat(7,1fr);
+margin:10px;
+}
+
+.day{
+border:1px solid #eee;
+min-height:50px;
+font-size:11px;
+padding:4px;
+}
+
+.fab{
+position:fixed;
+bottom:20px;
+left:50%;
+transform:translateX(-50%);
+background:#000;
+color:#fff;
+border:none;
+padding:14px 22px;
+border-radius:999px;
+}
+
+.popup{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+background:#fff;
+padding:16px;
+border-radius:18px 18px 0 0;
+display:none;
+}
+
+input,select{
+width:100%;
+padding:12px;
+margin:6px 0;
+border-radius:10px;
+border:1px solid #ddd;
+}
 </style>
 </head>
 
@@ -41,16 +93,17 @@ input,select{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1px 
 </div>
 
 <div class="tabs">
-<button class="active" onclick="App.tab('home')">기록</button>
-<button onclick="App.tab('stats')">통계</button>
-<button onclick="App.tab('set')">설정</button>
+<button class="active" onclick="tab('home')">기록</button>
+<button onclick="tab('stats')">통계</button>
+<button onclick="tab('set')">설정</button>
 </div>
 
-<div id="view" class="card"></div>
+<div id="view"></div>
 
-<button class="fab" onclick="App.open()">+ 추가</button>
+<button class="fab" onclick="openPopup()">+ 추가</button>
 
 <div class="popup" id="popup">
+
 <input type="date" id="date">
 <input type="number" id="amount">
 
@@ -63,13 +116,11 @@ input,select{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1px 
 <input id="method" placeholder="지출방식">
 <input id="memo" placeholder="메모">
 
-<button onclick="App.add()">저장</button>
-<button onclick="App.close()">닫기</button>
+<button onclick="add()">저장</button>
+<button onclick="closePopup()">닫기</button>
+
 </div>
 
-<script src="store.js"></script>
-<script src="analytics.js"></script>
-<script src="ui.js"></script>
 <script src="app.js"></script>
 
 </body>
