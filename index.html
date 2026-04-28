@@ -11,9 +11,7 @@
 <style>
 body{margin:0;font-family:-apple-system;background:#f2f2f7;}
 
-.header{
-text-align:center;padding:14px;background:#fff;font-weight:600;
-}
+.header{text-align:center;padding:14px;background:#fff;font-weight:600;}
 
 .summary{
 display:flex;justify-content:space-between;
@@ -79,7 +77,7 @@ border-radius:18px 18px 0 0;
 display:none;
 }
 
-input,select{
+button,input,select{
 width:100%;
 padding:12px;
 margin:6px 0;
@@ -108,24 +106,7 @@ border:1px solid #ddd;
 
 <button class="fab" onclick="openPopup()">+ 추가</button>
 
-<div class="popup" id="popup">
-
-<input type="date" id="date">
-<input type="number" id="amount">
-
-<select id="type">
-<option>수입</option>
-<option>지출</option>
-</select>
-
-<input id="category" placeholder="카테고리">
-<input id="method" placeholder="지출방식">
-<input id="memo" placeholder="메모">
-
-<button onclick="add()">저장</button>
-<button onclick="closePopup()">닫기</button>
-
-</div>
+<div class="popup" id="popup"></div>
 
 <script src="app.js"></script>
 
