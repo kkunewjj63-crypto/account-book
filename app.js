@@ -1,16 +1,19 @@
 let data = JSON.parse(localStorage.getItem("data") || "[]");
+let chart;
 
-/* ===== SAVE ===== */
+/* ===== SAVE SAFE ===== */
 function save(){
-  localStorage.setItem("data", JSON.stringify(data));
+  try{
+    localStorage.setItem("data", JSON.stringify(data));
+  }catch(e){
+    alert("저장 오류");
+  }
 }
 
 /* ===== HOME ===== */
 function renderHome(){
 
   let inS=0,outS=0;
-
-  let cal = createCalendar();
 
   let list="";
 
@@ -27,7 +30,7 @@ function renderHome(){
         <span style="color:${d.type==='수입'?'#007aff':'#ff3b30'}">
           ${d.type} ${a.toLocaleString()}
         </span><br>
-        <small>${d.category||""} / ${d.method||""}</small><br>
+        <small>${d.category||"기타"} / ${d.method||""}</small><br>
         <small>${d.memo||""}</small>
       </div>
     `;
@@ -37,12 +40,12 @@ function renderHome(){
   expense.innerText=outS.toLocaleString();
 
   view.innerHTML=`
-    <div class="card">${cal}</div>
+    <div class="card">${createCalendar()}</div>
     <div class="card">${list||"데이터 없음"}</div>
   `;
 }
 
-/* ===== CALENDAR ===== */
+/* ===== CALENDAR ENGINE ===== */
 function createCalendar(){
 
   let now=new Date();
@@ -71,8 +74,8 @@ function createCalendar(){
     html+=`
       <div class="day">
         ${d}<br>
-        <span style="color:#007aff">${inS||""}</span><br>
-        <span style="color:#ff3b30">${outS||""}</span>
+        <span class="in">${inS||""}</span><br>
+        <span class="out">${outS||""}</span>
       </div>
     `;
   }
@@ -81,32 +84,66 @@ function createCalendar(){
   return html;
 }
 
-/* ===== STATS ===== */
+/* ===== STATS (PRO LEVEL) ===== */
 function renderStats(){
+
+  let map={};
+
+  data.forEach(d=>{
+    if(d.type==="지출"){
+      let k=d.category||"기타";
+      map[k]=(map[k]||0)+(Number(d.amount)||0);
+    }
+  });
+
+  let labels=Object.keys(map);
+  let values=Object.values(map);
+
   view.innerHTML=`
     <div class="card">
-      통계 기능 (기본 안정 버전)
-      <br><br>
-      총 수입: ${getSum("수입").toLocaleString()}<br>
-      총 지출: ${getSum("지출").toLocaleString()}
+      <canvas id="chart"></canvas>
     </div>
   `;
+
+  setTimeout(()=>{
+
+    let ctx=document.getElementById("chart");
+
+    if(chart) chart.destroy();
+
+    chart=new Chart(ctx,{
+      type:"doughnut",
+      data:{
+        labels:labels.length?labels:["데이터 없음"],
+        datasets:[{
+          data:values.length?values:[1],
+          backgroundColor:[
+            "#007aff","#ff3b30","#34c759","#ff9500","#5856d6","#af52de"
+          ]
+        }]
+      },
+      options:{
+        plugins:{
+          legend:{position:"bottom"}
+        }
+      }
+    });
+
+  },100);
 }
 
-/* ===== SETTINGS ===== */
+/* ===== SETTINGS (BACKUP) ===== */
 function renderSet(){
+
   view.innerHTML=`
     <div class="card">
-      <button onclick="exportData()">백업</button><br><br>
+      <b>설정</b><br><br>
+
+      <button onclick="exportData()">데이터 백업</button><br><br>
+
       <input type="file" onchange="importData(event)">
     </div>
   `;
-}
-
-/* ===== SUM ===== */
-function getSum(type){
-  return data.filter(d=>d.type===type)
-    .reduce((s,d)=>s+(Number(d.amount)||0),0);
 }
 
 /* ===== TAB ===== */
@@ -153,16 +190,20 @@ function exportData(){
   let blob=new Blob([JSON.stringify(data)],{type:"application/json"});
   let a=document.createElement("a");
   a.href=URL.createObjectURL(blob);
-  a.download="backup.json";
+  a.download="account_backup.json";
   a.click();
 }
 
 function importData(e){
   let r=new FileReader();
   r.onload=()=>{
-    data=JSON.parse(r.result)||[];
-    save();
-    renderHome();
+    try{
+      data=JSON.parse(r.result)||[];
+      save();
+      renderHome();
+    }catch{
+      alert("복원 실패");
+    }
   };
   r.readAsText(e.target.files[0]);
 }
