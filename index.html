@@ -6,106 +6,36 @@
 <title>가계부</title>
 
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#007aff">
+<meta name="theme-color" content="#ff5c8a">
 
 <style>
 *{box-sizing:border-box;}
-body{
-margin:0;
-font-family:-apple-system;
-background:#f2f2f7;
-}
+body{margin:0;font-family:-apple-system;background:#f8f8fa;}
 
-.header{
-padding:16px;
-background:#fff;
-font-weight:600;
-text-align:center;
-}
+.header{padding:16px;text-align:center;font-weight:600;background:#fff;}
 
-.segment{
-display:flex;
-margin:10px;
-background:#e5e5ea;
-border-radius:12px;
-padding:4px;
-}
+.segment{display:flex;margin:10px;background:#eee;border-radius:12px;padding:4px;}
+.segment button{flex:1;border:none;padding:10px;border-radius:10px;background:transparent;}
+.segment .active{background:#fff;}
 
-.segment button{
-flex:1;
-border:none;
-padding:10px;
-border-radius:10px;
-background:transparent;
-}
+.card{background:#fff;margin:10px;border-radius:16px;padding:12px;}
 
-.segment .active{
-background:#fff;
-}
-
-.card{
-background:#fff;
-margin:10px;
-border-radius:16px;
-padding:12px;
-}
-
-.item{
-display:flex;
-justify-content:space-between;
-padding:8px 0;
-border-bottom:1px solid #eee;
-}
-
+.item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee;}
 .item:last-child{border:none;}
 
-.date{
-font-weight:600;
-margin-bottom:6px;
-}
+.in{color:#007aff;}
+.out{color:#ff3b30;}
 
-.fab{
-position:fixed;
-bottom:20px;
-right:20px;
-width:56px;
-height:56px;
-border-radius:50%;
-background:#007aff;
-color:#fff;
-font-size:24px;
-border:none;
-}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.day{background:#fff;border-radius:8px;padding:6px;font-size:11px;min-height:60px;}
 
-/* bottom sheet */
-.sheet{
-position:fixed;
-bottom:-100%;
-left:0;
-width:100%;
-background:#fff;
-border-radius:20px 20px 0 0;
-padding:16px;
-transition:.3s;
-}
+.fab{position:fixed;bottom:20px;right:20px;width:56px;height:56px;border-radius:50%;background:#ff5c8a;color:#fff;font-size:24px;border:none;}
 
-.sheet.show{
-bottom:0;
-}
+.sheet{position:fixed;bottom:-100%;left:0;width:100%;background:#fff;border-radius:20px 20px 0 0;padding:16px;transition:.3s;}
+.sheet.show{bottom:0;}
 
-input,select,button{
-width:100%;
-padding:12px;
-margin:6px 0;
-border-radius:12px;
-border:none;
-background:#f2f2f7;
-}
-
-button.primary{
-background:#007aff;
-color:#fff;
-}
+input,select,button{width:100%;padding:12px;margin:6px 0;border-radius:12px;border:none;background:#f2f2f7;}
+button.primary{background:#ff5c8a;color:#fff;}
 </style>
 </head>
 
@@ -121,11 +51,9 @@ color:#fff;
 <div id="view"></div>
 
 <button class="fab" onclick="openSheet()">＋</button>
-
 <div class="sheet" id="sheet"></div>
 
 <script src="app.js"></script>
-
 <script>
 if("serviceWorker" in navigator){
 navigator.serviceWorker.register("./service-worker.js");
