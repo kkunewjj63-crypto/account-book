@@ -1,6 +1,7 @@
-const CACHE="app-v1";
+const CACHE="app-v3";
 
 self.addEventListener("install",e=>{
+self.skipWaiting();
 e.waitUntil(
 caches.open(CACHE).then(c=>c.addAll([
 "./",
@@ -8,6 +9,14 @@ caches.open(CACHE).then(c=>c.addAll([
 "./app.js",
 "./manifest.json"
 ]))
+);
+});
+
+self.addEventListener("activate",e=>{
+e.waitUntil(
+caches.keys().then(keys=>
+Promise.all(keys.map(k=>k!==CACHE && caches.delete(k)))
+)
 );
 });
 
