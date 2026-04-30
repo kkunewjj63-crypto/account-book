@@ -6,7 +6,7 @@
 <title>account book</title>
 
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#007aff">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -26,30 +26,38 @@ background:#fff;
 font-weight:600;
 position:sticky;
 top:0;
+z-index:10;
 }
 
-.user-switch{
-display:flex;
-gap:6px;
-padding:10px;
-}
-
-.user-switch button{
-flex:1;
-background:#007aff;
-color:#fff;
-border:none;
-padding:10px;
-border-radius:10px;
-}
-
-.summary{
-display:flex;
-justify-content:space-between;
-margin:10px;
-padding:14px;
+.card{
+margin:12px;
+padding:16px;
 background:#fff;
 border-radius:20px;
+}
+
+.row{
+display:flex;
+gap:8px;
+}
+
+.row > *{
+flex:1;
+min-width:0;
+}
+
+button,input,select{
+width:100%;
+padding:12px;
+border-radius:12px;
+border:none;
+background:#f2f2f7;
+font-size:14px;
+}
+
+button{
+background:#007aff;
+color:#fff;
 }
 
 .tabs{
@@ -62,36 +70,25 @@ overflow:hidden;
 
 .tabs button{
 flex:1;
-padding:12px;
-border:none;
 background:transparent;
+color:#000;
 }
 
-.tabs button.active{
+.tabs .active{
 background:#000;
 color:#fff;
 }
 
-.card{
-margin:12px;
-padding:16px;
-background:#fff;
-border-radius:20px;
-box-shadow:0 4px 12px rgba(0,0,0,0.05);
-}
-
-.item{
-padding:12px;
-border-bottom:1px solid #eee;
-}
-
-button,input,select{
+.popup{
+position:fixed;
+bottom:0;
+left:0;
 width:100%;
-padding:10px;
-margin:5px 0;
-border-radius:10px;
-border:none;
-background:#f2f2f7;
+background:#fff;
+padding:16px;
+border-radius:20px 20px 0 0;
+display:none;
+z-index:999;
 }
 
 .fab{
@@ -101,36 +98,8 @@ right:20px;
 width:56px;
 height:56px;
 border-radius:50%;
-background:#007aff;
-color:#fff;
-font-size:24px;
-border:none;
+font-size:22px;
 }
-
-.popup{
-position:fixed;
-bottom:0;
-left:0;
-width:100%;
-background:#fff;
-padding:20px;
-border-radius:20px 20px 0 0;
-display:none;
-}
-
-.calendar{
-display:grid;
-grid-template-columns:repeat(7,1fr);
-}
-
-.day{
-font-size:11px;
-padding:6px;
-border:1px solid #eee;
-}
-
-.in{color:#007aff;}
-.out{color:#ff3b30;}
 </style>
 </head>
 
@@ -138,14 +107,9 @@ border:1px solid #eee;
 
 <div class="header">account book</div>
 
-<div class="user-switch">
+<div class="card row">
 <button onclick="switchUser('personal')">👤 개인</button>
 <button onclick="switchUser('family')">🏠 가족</button>
-</div>
-
-<div class="summary">
-<div>수입 <b id="income">0</b></div>
-<div>지출 <b id="expense">0</b></div>
 </div>
 
 <div class="tabs">
@@ -160,5 +124,12 @@ border:1px solid #eee;
 <div class="popup" id="popup"></div>
 
 <script src="app.js"></script>
+
+<script>
+if("serviceWorker" in navigator){
+navigator.serviceWorker.register("./service-worker.js");
+}
+</script>
+
 </body>
 </html>
