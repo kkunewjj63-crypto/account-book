@@ -2,87 +2,54 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>account book</title>
 
 <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#000000">
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 body{margin:0;font-family:-apple-system;background:#f2f2f7;}
-
 .header{text-align:center;padding:14px;background:#fff;font-weight:600;}
 
 .summary{
 display:flex;justify-content:space-between;
-margin:10px;padding:14px;background:#fff;border-radius:14px;
+margin:12px;padding:16px;background:#fff;border-radius:20px;
 }
 
 .tabs{
-display:flex;margin:10px;background:#fff;border-radius:14px;overflow:hidden;
+display:flex;margin:10px;background:#fff;border-radius:14px;
+overflow:hidden;
 }
 
-.tabs button{
-flex:1;padding:12px;border:none;background:transparent;
-}
-
-.tabs button.active{
-background:#000;color:#fff;
-}
+.tabs button{flex:1;padding:12px;border:none;background:transparent;}
+.tabs button.active{background:#000;color:#fff;}
 
 .card{
-margin:10px;background:#fff;border-radius:14px;padding:12px;
+margin:12px;background:#fff;border-radius:20px;
+padding:16px;box-shadow:0 4px 12px rgba(0,0,0,0.05);
 }
 
-.item{
-padding:10px;border-bottom:1px solid #eee;
-}
+.item{padding:10px;border-bottom:1px solid #eee;}
 
-.calendar{
-display:grid;
-grid-template-columns:repeat(7,1fr);
-margin:10px;
+button,input,select{
+width:100%;padding:12px;margin:6px 0;
+border-radius:10px;border:1px solid #ddd;
 }
-
-.day{
-border:1px solid #eee;
-min-height:50px;
-font-size:11px;
-padding:4px;
-}
-
-.in{color:#007aff;}
-.out{color:#ff3b30;}
 
 .fab{
-position:fixed;
-bottom:20px;
-left:50%;
+position:fixed;bottom:20px;left:50%;
 transform:translateX(-50%);
-background:#000;
-color:#fff;
-border:none;
-padding:14px 22px;
-border-radius:999px;
+background:#000;color:#fff;border:none;
+padding:14px 22px;border-radius:999px;
 }
 
 .popup{
-position:fixed;
-bottom:0;
-left:0;
-width:100%;
-background:#fff;
-padding:16px;
-border-radius:18px 18px 0 0;
-display:none;
-}
-
-button,input,select{
-width:100%;
-padding:12px;
-margin:6px 0;
-border-radius:10px;
-border:1px solid #ddd;
+position:fixed;bottom:0;left:0;width:100%;
+background:#fff;padding:16px;
+border-radius:18px 18px 0 0;display:none;
 }
 </style>
 </head>
@@ -97,18 +64,16 @@ border:1px solid #ddd;
 </div>
 
 <div class="tabs">
-<button class="active" onclick="tab('home')">기록</button>
-<button onclick="tab('stats')">통계</button>
-<button onclick="tab('set')">설정</button>
+<button class="active" onclick="tab('home',this)">기록</button>
+<button onclick="tab('stats',this)">통계</button>
+<button onclick="tab('set',this)">설정</button>
 </div>
 
 <div id="view"></div>
 
 <button class="fab" onclick="openPopup()">+ 추가</button>
-
 <div class="popup" id="popup"></div>
 
 <script src="app.js"></script>
-
 </body>
 </html>
