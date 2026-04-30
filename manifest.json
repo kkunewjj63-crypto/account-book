@@ -1,1 +1,8 @@
-"start_url": "./index.html"
+{
+"name":"account book",
+"short_name":"account book",
+"start_url":"./index.html",
+"display":"standalone",
+"background_color":"#ffffff",
+"theme_color":"#007aff"
+}
