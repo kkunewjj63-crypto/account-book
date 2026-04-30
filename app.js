@@ -1,160 +1,86 @@
 let users = JSON.parse(localStorage.getItem("users") || JSON.stringify({
-personal:{data:[],categories:["식비","교통"],methods:["현금","카드"]},
-family:{data:[],categories:["생활비"],methods:["카드"]}
+personal:{data:[]},
+family:{data:[]}
 }));
 
-let current = localStorage.getItem("currentUser") || "personal";
+let current = localStorage.getItem("current") || "personal";
 
 function save(){
 localStorage.setItem("users",JSON.stringify(users));
 }
 
-function switchUser(key){
-current=key;
-localStorage.setItem("currentUser",key);
-renderHome();
+/* USER */
+function switchUser(u){
+current=u;
+localStorage.setItem("current",u);
+render();
 }
 
-function tab(name,el){
-document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
-el.classList.add("active");
+/* RENDER */
+function render(){
 
-if(name==="home") renderHome();
-if(name==="stats") renderStats();
-if(name==="set") renderSet();
-}
+btnP.classList.toggle("active",current==="personal");
+btnF.classList.toggle("active",current==="family");
 
-/* HOME */
-function renderHome(){
-let u=users[current];
+let data = users[current].data;
+
+let grouped={};
+
+data.forEach(d=>{
+if(!grouped[d.date]) grouped[d.date]=[];
+grouped[d.date].push(d);
+});
+
 let html="";
 
-u.data.slice().reverse().forEach((d,i)=>{
+Object.keys(grouped).sort((a,b)=>b.localeCompare(a)).forEach(date=>{
+
+html+=`<div class="card">
+<div class="date">${date}</div>`;
+
+grouped[date].forEach(d=>{
 html+=`
-<div class="card">
-${d.date} / ${d.type} / ${d.amount}<br>
-${d.category} / ${d.method}<br>
-<button onclick="del(${i})">삭제</button>
+<div class="item">
+<div>${d.category} (${d.method})</div>
+<div style="color:${d.type==='수입'?'#007aff':'#ff3b30'}">
+${d.amount}
+</div>
 </div>`;
 });
 
-view.innerHTML=html || "<div class='card'>데이터 없음</div>";
+html+="</div>";
+});
+
+view.innerHTML = html || "<div class='card'>데이터 없음</div>";
 }
 
-function del(i){
-let u=users[current];
-u.data.splice(u.data.length-1-i,1);
-save();
-renderHome();
-}
+/* INPUT */
+function openSheet(){
+sheet.classList.add("show");
 
-/* SETTINGS */
-function renderSet(){
-let u=users[current];
-
-view.innerHTML=`
-<div class="card">
-
-<h3>카테고리</h3>
-${u.categories.map((c,i)=>`
-<div class="row">
-<input value="${c}" onchange="editCat(${i},this.value)">
-<button onclick="delCat(${i})">삭제</button>
-</div>
-`).join("")}
-
-<div class="row">
-<input id="newCat">
-<button onclick="addCat()">추가</button>
-</div>
-
-<hr>
-
-<h3>지출방식</h3>
-${u.methods.map((m,i)=>`
-<div class="row">
-<input value="${m}" onchange="editMethod(${i},this.value)">
-<button onclick="delMethod(${i})">삭제</button>
-</div>
-`).join("")}
-
-<div class="row">
-<input id="newMethod">
-<button onclick="addMethod()">추가</button>
-</div>
-
-</div>
-`;
-}
-
-function addCat(){
-if(newCat.value){
-users[current].categories.push(newCat.value);
-save(); renderSet();
-}
-}
-
-function editCat(i,v){
-users[current].categories[i]=v;
-save();
-}
-
-function delCat(i){
-users[current].categories.splice(i,1);
-save(); renderSet();
-}
-
-function addMethod(){
-if(newMethod.value){
-users[current].methods.push(newMethod.value);
-save(); renderSet();
-}
-}
-
-function editMethod(i,v){
-users[current].methods[i]=v;
-save();
-}
-
-function delMethod(i){
-users[current].methods.splice(i,1);
-save(); renderSet();
-}
-
-/* STATS */
-function renderStats(){
-view.innerHTML="<div class='card'>통계 준비중</div>";
-}
-
-/* POPUP */
-function openPopup(){
-popup.style.display="block";
-
-popup.innerHTML=`
-<div class="card">
+sheet.innerHTML=`
 <input type="date" id="d">
 <input type="number" id="a" placeholder="금액">
 
 <select id="type">
-<option>수입</option>
 <option>지출</option>
+<option>수입</option>
 </select>
 
-<select id="cat">
-${users[current].categories.map(c=>`<option>${c}</option>`).join("")}
-</select>
+<input id="cat" placeholder="카테고리">
+<input id="method" placeholder="결제수단">
 
-<select id="method">
-${users[current].methods.map(m=>`<option>${m}</option>`).join("")}
-</select>
-
-<button onclick="saveData()">저장</button>
-<button onclick="popup.style.display='none'">닫기</button>
-</div>
+<button class="primary" onclick="saveData()">저장</button>
+<button onclick="closeSheet()">닫기</button>
 `;
 }
 
+function closeSheet(){
+sheet.classList.remove("show");
+}
+
 function saveData(){
+
 users[current].data.push({
 date:d.value,
 amount:a.value,
@@ -162,9 +88,10 @@ type:type.value,
 category:cat.value,
 method:method.value
 });
+
 save();
-popup.style.display="none";
-renderHome();
+closeSheet();
+render();
 }
 
-renderHome();
+render();
