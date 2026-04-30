@@ -6,28 +6,29 @@
 <title>가계부</title>
 
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#ff5c8a">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 *{box-sizing:border-box;}
 body{margin:0;font-family:-apple-system;background:#f8f8fa;}
 
-.header{padding:16px;text-align:center;font-weight:600;background:#fff;}
+.header{padding:16px;text-align:center;background:#fff;font-weight:600;}
 
 .segment{display:flex;margin:10px;background:#eee;border-radius:12px;padding:4px;}
 .segment button{flex:1;border:none;padding:10px;border-radius:10px;background:transparent;}
 .segment .active{background:#fff;}
 
+.tabs{display:flex;margin:10px;background:#fff;border-radius:12px;}
+.tabs button{flex:1;border:none;padding:10px;background:transparent;}
+.tabs .active{background:#ff5c8a;color:#fff;border-radius:10px;}
+
 .card{background:#fff;margin:10px;border-radius:16px;padding:12px;}
 
 .item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee;}
-.item:last-child{border:none;}
-
-.in{color:#007aff;}
-.out{color:#ff3b30;}
 
 .calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
-.day{background:#fff;border-radius:8px;padding:6px;font-size:11px;min-height:60px;}
+.day{background:#fff;border-radius:8px;padding:6px;font-size:11px;}
 
 .fab{position:fixed;bottom:20px;right:20px;width:56px;height:56px;border-radius:50%;background:#ff5c8a;color:#fff;font-size:24px;border:none;}
 
@@ -46,6 +47,12 @@ button.primary{background:#ff5c8a;color:#fff;}
 <div class="segment">
 <button id="btnP" onclick="switchUser('personal')">👤 개인</button>
 <button id="btnF" onclick="switchUser('family')">🏠 가족</button>
+</div>
+
+<div class="tabs">
+<button class="active" onclick="tab('home',this)">기록</button>
+<button onclick="tab('stats',this)">통계</button>
+<button onclick="tab('set',this)">설정</button>
 </div>
 
 <div id="view"></div>
