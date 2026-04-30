@@ -315,5 +315,8 @@ popup.style.display="none";
 renderHome();
 }
 
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("./service-worker.js");
+}
 /* INIT */
 renderHome();
