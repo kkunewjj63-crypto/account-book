@@ -1,9 +1,12 @@
-const CACHE="v1";
+const CACHE="app-v1";
 
 self.addEventListener("install",e=>{
 e.waitUntil(
 caches.open(CACHE).then(c=>c.addAll([
-"./","./index.html","./app.js"
+"./",
+"./index.html",
+"./app.js",
+"./manifest.json"
 ]))
 );
 });
