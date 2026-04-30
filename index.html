@@ -11,52 +11,137 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-body{margin:0;font-family:-apple-system;background:#f2f2f7;}
-.header{text-align:center;padding:14px;background:#fff;font-weight:600;}
+*{box-sizing:border-box;}
+
+body{
+margin:0;
+font-family:-apple-system;
+background:#f2f2f7;
+}
+
+.header{
+text-align:center;
+padding:16px;
+background:#fff;
+font-weight:600;
+position:sticky;
+top:0;
+}
+
+.user-switch{
+display:flex;
+gap:6px;
+padding:10px;
+}
+
+.user-switch button{
+flex:1;
+background:#007aff;
+color:#fff;
+border:none;
+padding:10px;
+border-radius:10px;
+}
 
 .summary{
-display:flex;justify-content:space-between;
-margin:12px;padding:16px;background:#fff;border-radius:20px;
+display:flex;
+justify-content:space-between;
+margin:10px;
+padding:14px;
+background:#fff;
+border-radius:20px;
 }
 
 .tabs{
-display:flex;margin:10px;background:#fff;border-radius:14px;
+display:flex;
+margin:10px;
+background:#fff;
+border-radius:14px;
 overflow:hidden;
 }
 
-.tabs button{flex:1;padding:12px;border:none;background:transparent;}
-.tabs button.active{background:#000;color:#fff;}
-
-.card{
-margin:12px;background:#fff;border-radius:20px;
-padding:16px;box-shadow:0 4px 12px rgba(0,0,0,0.05);
+.tabs button{
+flex:1;
+padding:12px;
+border:none;
+background:transparent;
 }
 
-.item{padding:10px;border-bottom:1px solid #eee;}
+.tabs button.active{
+background:#000;
+color:#fff;
+}
+
+.card{
+margin:12px;
+padding:16px;
+background:#fff;
+border-radius:20px;
+box-shadow:0 4px 12px rgba(0,0,0,0.05);
+}
+
+.item{
+padding:12px;
+border-bottom:1px solid #eee;
+}
 
 button,input,select{
-width:100%;padding:12px;margin:6px 0;
-border-radius:10px;border:1px solid #ddd;
+width:100%;
+padding:10px;
+margin:5px 0;
+border-radius:10px;
+border:none;
+background:#f2f2f7;
 }
 
 .fab{
-position:fixed;bottom:20px;left:50%;
-transform:translateX(-50%);
-background:#000;color:#fff;border:none;
-padding:14px 22px;border-radius:999px;
+position:fixed;
+bottom:20px;
+right:20px;
+width:56px;
+height:56px;
+border-radius:50%;
+background:#007aff;
+color:#fff;
+font-size:24px;
+border:none;
 }
 
 .popup{
-position:fixed;bottom:0;left:0;width:100%;
-background:#fff;padding:16px;
-border-radius:18px 18px 0 0;display:none;
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+background:#fff;
+padding:20px;
+border-radius:20px 20px 0 0;
+display:none;
 }
+
+.calendar{
+display:grid;
+grid-template-columns:repeat(7,1fr);
+}
+
+.day{
+font-size:11px;
+padding:6px;
+border:1px solid #eee;
+}
+
+.in{color:#007aff;}
+.out{color:#ff3b30;}
 </style>
 </head>
 
 <body>
 
 <div class="header">account book</div>
+
+<div class="user-switch">
+<button onclick="switchUser('personal')">👤 개인</button>
+<button onclick="switchUser('family')">🏠 가족</button>
+</div>
 
 <div class="summary">
 <div>수입 <b id="income">0</b></div>
@@ -71,7 +156,7 @@ border-radius:18px 18px 0 0;display:none;
 
 <div id="view"></div>
 
-<button class="fab" onclick="openPopup()">+ 추가</button>
+<button class="fab" onclick="openPopup()">＋</button>
 <div class="popup" id="popup"></div>
 
 <script src="app.js"></script>
